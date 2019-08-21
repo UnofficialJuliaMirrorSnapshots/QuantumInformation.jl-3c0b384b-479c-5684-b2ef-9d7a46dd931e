@@ -56,8 +56,8 @@ end
     @testset "construction from function" begin
         ρ = [0.25 0.25im; -0.25im 0.75]
         t = hcat([ComplexF64[0.25, 0.25im, -0.25im, 0.75] for i=1:4]...) #stack res ρ
-        @test_throws ErrorException m = SuperOperator{Matrix{ComplexF64}}(x -> ρ, 2, 2).matrix
-        @test_broken norm(t-m) ≈ 0. atol=1e-15
+        m = SuperOperator{Matrix{ComplexF64}}(x -> ρ, 2, 2).matrix
+        @test norm(t-m) ≈ 0. atol=1e-15
     end
 
     @testset "convert to KrausOperators" begin
@@ -195,4 +195,13 @@ end
         @test σ ≈ ξ atol=1e-8
     end
 end
+end
+
+@testset "represent" begin
+    for kraus_list in kraus_set
+        Φ = KrausOperators(kraus_list)
+        @test represent(Φ) == kraus_list
+    end
+
+    @test represent(DynamicalMatrix(J_random, 3, 3)) == J_random
 end

@@ -5,8 +5,10 @@
     ψ = ComplexF64[1, 0, 0, 0]
     @test norm(ϕ - ψ) ≈ 0.
 
-    @test typeof(ket(Float64, 1, 4)) == Vector{Float64}
-    @test typeof(ket(ComplexF64, 1, 4)) == Vector{ComplexF64}
+    @test typeof(ket(Vector{Float64}, 1, 4)) == Vector{Float64}
+    @test typeof(ket(Vector{ComplexF64}, 1, 4)) == Vector{ComplexF64}
+
+    @test typeof(ket(Float32, 1, 4)) == Vector{Float32}
 
     @test_throws ArgumentError ket(4, 3)
 end
@@ -18,8 +20,11 @@ end
 
     @test_throws ArgumentError bra(4,3)
 
-    @test typeof(bra(Float64, 1, 4)) == LinearAlgebra.Adjoint{Float64,Array{Float64,1}}
-    @test typeof(bra(ComplexF64, 1, 4)) == LinearAlgebra.Adjoint{Complex{Float64},Array{Complex{Float64},1}}
+    @test typeof(bra(Float32, 1, 4)) == LinearAlgebra.Adjoint{Float32,Array{Float32,1}}
+
+    @test typeof(bra(Vector{Float64}, 1, 4)) == LinearAlgebra.Adjoint{Float64,Array{Float64,1}}
+    @test typeof(bra(Vector{ComplexF64}, 1, 4)) == LinearAlgebra.Adjoint{Complex{Float64},Array{Complex{Float64},1}}
+    
 end
 
 @testset "ketbra" begin
@@ -28,10 +33,15 @@ end
     αβ[1, 1] = 1
     @test norm(ϕψ - αβ) ≈ 0.
 
+    ψ = ketbra(3, 2, 3, 4) * ket(2, 3)
+    @test ψ[3] ≈ 1
+
     @test_throws ArgumentError ketbra(4, 4, 3)
 
-    @test typeof(ketbra(Float64, 1, 1, 4)) == Matrix{Float64}
-    @test typeof(ketbra(ComplexF64, 1, 1, 4)) == Matrix{ComplexF64}
+    @test typeof(ketbra(Float32, 1, 1, 4)) == Matrix{Float32}
+
+    @test typeof(ketbra(Matrix{Float64}, 1, 1, 4)) == Matrix{Float64}
+    @test typeof(ketbra(Matrix{ComplexF64}, 1, 1, 4)) == Matrix{ComplexF64}
 end
 
 @testset "proj" begin
